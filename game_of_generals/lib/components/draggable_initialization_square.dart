@@ -3,31 +3,31 @@ import 'package:game_of_generals/components/game_piece.dart';
 import 'package:game_of_generals/values/colors.dart';
 
 // ignore: must_be_immutable
-class DraggableBoardSquare extends StatefulWidget {
+class DraggableInitializationSquare extends StatefulWidget {
   GamePiece? piece;
   final int index;
   final bool isSelected;
-  final bool isValidMove;
   final Function()? onTap;
 
-  DraggableBoardSquare(
+  DraggableInitializationSquare(
       {super.key,
       required this.piece,
       required this.index,
       required this.isSelected,
-      required this.isValidMove,
       required this.onTap});
 
   @override
-  State<DraggableBoardSquare> createState() => _DraggableBoardSquareState();
+  State<DraggableInitializationSquare> createState() =>
+      _DraggableInitializationSquare();
 }
 
-class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
+class _DraggableInitializationSquare
+    extends State<DraggableInitializationSquare> {
   @override
   Widget build(BuildContext context) {
     Color? squareColor;
 
-    if (widget.isSelected || widget.isValidMove) {
+    if (widget.isSelected) {
       squareColor = Colors.amber;
     } else if (widget.index <= 35) {
       squareColor = tileColor1;
@@ -53,11 +53,11 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                 );
               },
               onAcceptWithDetails: (data) {
-                // if no piece
-                widget.onTap!();
+                setState(() {
+                  widget.piece = data.data;
+                });
               },
             )
-          // If Has Piece
           : DragTarget<GamePiece>(
               onWillAcceptWithDetails: (data) {
                 if (data.data == widget.piece) {
@@ -66,8 +66,10 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                 return true;
               },
               onAcceptWithDetails: (data) {
-                // Eat Piece
-                widget.onTap!();
+                setState(() {
+                  // TODO: State if has piece inside square
+                  widget.piece = data.data;
+                });
               },
               builder: (context, candidateData, rejectedData) {
                 return LongPressDraggable<GamePiece>(

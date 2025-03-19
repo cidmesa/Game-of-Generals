@@ -16,6 +16,22 @@ enum GamePieceType {
   flag
 }
 
+Map<GamePieceType, int> gamePieceScore = {
+  GamePieceType.star5: 13,
+  GamePieceType.star4: 12,
+  GamePieceType.star3: 11,
+  GamePieceType.star2: 10,
+  GamePieceType.star1: 9,
+  GamePieceType.sun3: 8,
+  GamePieceType.sun2: 7,
+  GamePieceType.sun1: 6,
+  GamePieceType.triangle3: 5,
+  GamePieceType.triangle2: 4,
+  GamePieceType.triangle1: 3,
+  GamePieceType.sergeant: 2,
+  GamePieceType.private: 1,
+};
+
 class GamePiece {
   final GamePieceType type;
   final bool isWhite;

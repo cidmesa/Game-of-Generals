@@ -25,50 +25,62 @@ class GameBoard extends StatelessWidget {
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            title:
-                Text("Game of Generals", style: TextStyle(color: Colors.white)),
+            title: Text(
+              "Game of Generals",
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Colors.redAccent,
           ),
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              // Get screen dimensions
-              double screenWidth = constraints.maxWidth;
-              double screenHeight = constraints.maxHeight;
+          body: Column(
+            children: [
+              Expanded(flex: 1, child: Container(color: Colors.red)),
+              Expanded(
+                flex: 3,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Get screen dimensions
+                    double screenWidth = constraints.maxWidth;
+                    double screenHeight = constraints.maxHeight;
 
-              // Calculate the size of the grid to fit on the screen
-              double gridSize = screenWidth < screenHeight
-                  ? screenWidth * 0.95 // Fit horizontally
-                  : screenHeight * 0.95; // Fit vertically
+                    // Calculate the size of the grid to fit on the screen
+                    double gridSize = screenWidth < screenHeight
+                        ? screenWidth * 1 // Fit horizontally
+                        : screenHeight * 1; // Fit vertically
 
-              return Center(
-                child: Container(
-                  width: gridSize,
-                  height: (gridSize / 9) * 8, // Maintain 9x8 aspect ratio
-                  decoration: BoxDecoration(
-                    color: Colors.grey[500],
-                    border: Border.all(color: Colors.black, width: 4),
-                  ),
-                  child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 9,
-                    ),
-                    itemCount: 72,
-                    itemBuilder: (context, index) {
-                      int row = index ~/ 9;
-                      int col = index % 9;
+                    return Center(
+                      child: Container(
+                        width: gridSize,
+                        height: (gridSize / 9) * 8, // Maintain 9x8 aspect ratio
+                        decoration: BoxDecoration(
+                          color: Colors.grey[500],
+                          border: Border.all(color: Colors.black, width: 4),
+                        ),
+                        child: GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 9,
+                          ),
+                          itemCount: 72,
+                          itemBuilder: (context, index) {
+                            int row = index ~/ 9;
+                            int col = index % 9;
 
-                      bool target = row == 7 && col == 0;
+                            bool target = row == 7 && col == 0;
 
-                      return DraggableBoardSquare(
-                        piece: target ? whiteGeneral5 : null,
-                        index: index,
-                      );
-                    },
-                  ),
+                            return DraggableBoardSquare(
+                              piece: target ? whiteGeneral5 : null,
+                              index: index,
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+              Expanded(flex: 1, child: Container(color: Colors.red)),
+            ],
           ),
         ),
       ),
