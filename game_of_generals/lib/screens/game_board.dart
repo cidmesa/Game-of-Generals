@@ -11,10 +11,8 @@ void main() {
 class GameBoard extends StatelessWidget {
   GameBoard({super.key});
 
-  GamePiece whiteGeneral5 = GamePiece(
-      type: GamePieceType.star5,
-      isWhite: true,
-      image: 'assets/White_5Star.png');
+  GamePiece whiteGeneral5 =
+      GamePiece(type: GamePieceType.star5, isWhite: false, image: '5Star.png');
 
   @override
   Widget build(BuildContext context) {

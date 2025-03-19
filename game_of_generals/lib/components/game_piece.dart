@@ -19,7 +19,13 @@ enum GamePieceType {
 class GamePiece {
   final GamePieceType type;
   final bool isWhite;
-  final String image;
+  String image;
 
-  GamePiece({required this.type, required this.isWhite, required this.image});
+  GamePiece({required this.type, required this.isWhite, required this.image}) {
+    if (isWhite) {
+      image = "lib/assets/White_$image";
+    } else {
+      image = "lib/assets/Black_$image";
+    }
+  }
 }

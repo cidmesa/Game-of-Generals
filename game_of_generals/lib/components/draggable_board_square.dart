@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/game_piece.dart';
+import 'package:game_of_generals/values/colors.dart';
 
 // ignore: must_be_immutable
 class DraggableBoardSquare extends StatefulWidget {
@@ -20,9 +21,9 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
             builder: (context, candidateData, rejectedData) {
               return Container(
                 decoration: BoxDecoration(
-                  color: widget.index <= 35 ? Colors.black : Colors.white,
+                  color: widget.index <= 35 ? tileColor1 : tileColor2,
                   border: Border.all(
-                    color: widget.index <= 35 ? Colors.white : Colors.black,
+                    color: widget.index <= 35 ? tileColor2 : tileColor1,
                     width: 3.0,
                   ),
                 ),
@@ -58,19 +59,28 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: widget.index <= 35 ? Colors.black : Colors.white,
+                    color: widget.index <= 35 ? tileColor1 : tileColor2,
                     border: Border.all(
-                      color: widget.index <= 35 ? Colors.white : Colors.black,
+                      color: widget.index <= 35 ? tileColor2 : tileColor1,
                       width: 3.0,
                     ),
                   ),
                   child: Image.asset(widget.piece!.image),
                 ),
+                childWhenDragging: Container(
+                  decoration: BoxDecoration(
+                    color: widget.index <= 35 ? tileColor1 : tileColor2,
+                    border: Border.all(
+                      color: widget.index <= 35 ? tileColor2 : tileColor1,
+                      width: 3.0,
+                    ),
+                  ),
+                ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: widget.index <= 35 ? Colors.black : Colors.white,
+                    color: widget.index <= 35 ? tileColor1 : tileColor2,
                     border: Border.all(
-                      color: widget.index <= 35 ? Colors.white : Colors.black,
+                      color: widget.index <= 35 ? tileColor2 : tileColor1,
                       width: 3.0,
                     ),
                   ),
