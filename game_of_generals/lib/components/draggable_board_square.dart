@@ -8,6 +8,8 @@ class DraggableBoardSquare extends StatefulWidget {
   final int index;
   final bool isSelected;
   final bool isValidMove;
+  final bool isWhiteTurn;
+  final bool isReveal;
   final Function()? onTap;
 
   DraggableBoardSquare(
@@ -16,6 +18,8 @@ class DraggableBoardSquare extends StatefulWidget {
       required this.index,
       required this.isSelected,
       required this.isValidMove,
+      required this.isReveal,
+      required this.isWhiteTurn,
       required this.onTap});
 
   @override
@@ -26,18 +30,20 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
   @override
   Widget build(BuildContext context) {
     Color? squareColor;
+    Color? borderColor;
 
     if (widget.isSelected || widget.isValidMove) {
       squareColor = Colors.amber;
     } else if (widget.index <= 35) {
-      squareColor = tileColor1;
+      squareColor = widget.isWhiteTurn ? tileColor1 : tileColor2;
+      borderColor = widget.isWhiteTurn ? tileColor2 : tileColor1;
     } else {
-      squareColor = tileColor2;
+      squareColor = widget.isWhiteTurn ? tileColor2 : tileColor1;
+      borderColor = widget.isWhiteTurn ? tileColor1 : tileColor2;
     }
     return GestureDetector(
       onTap: () {
         widget.onTap!();
-        print(widget.isSelected);
       },
       child: widget.piece == null
           ? DragTarget<GamePiece>(
@@ -46,7 +52,7 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                   decoration: BoxDecoration(
                     color: squareColor,
                     border: Border.all(
-                      color: widget.index <= 35 ? tileColor2 : tileColor1,
+                      color: borderColor ?? Colors.black,
                       width: 3.0,
                     ),
                   ),
@@ -80,7 +86,7 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                     decoration: BoxDecoration(
                       color: squareColor,
                       border: Border.all(
-                        color: widget.index <= 35 ? tileColor2 : tileColor1,
+                        color: borderColor ?? Colors.black,
                         width: 3.0,
                       ),
                     ),
@@ -90,7 +96,7 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                     decoration: BoxDecoration(
                       color: squareColor,
                       border: Border.all(
-                        color: widget.index <= 35 ? tileColor2 : tileColor1,
+                        color: borderColor ?? Colors.black,
                         width: 3.0,
                       ),
                     ),
@@ -100,12 +106,16 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                     decoration: BoxDecoration(
                       color: squareColor,
                       border: Border.all(
-                        color: widget.index <= 35 ? tileColor2 : tileColor1,
+                        color: borderColor ?? Colors.black,
                         width: 3.0,
                       ),
                     ),
                     child: Center(
-                      child: Image.asset(widget.piece!.image),
+                      child: Image.asset(
+                          widget.isWhiteTurn == widget.piece!.isWhite &&
+                                  widget.isReveal
+                              ? widget.piece!.image
+                              : widget.piece!.hideImage!),
                     ),
                   ),
                 );

@@ -37,7 +37,6 @@ class _DraggableInitializationSquare
     return GestureDetector(
       onTap: () {
         widget.onTap!();
-        print(widget.isSelected);
       },
       child: widget.piece == null
           ? DragTarget<GamePiece>(

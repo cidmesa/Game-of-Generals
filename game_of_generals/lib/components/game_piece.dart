@@ -17,6 +17,7 @@ enum GamePieceType {
 }
 
 Map<GamePieceType, int> gamePieceScore = {
+  GamePieceType.spy: 14,
   GamePieceType.star5: 13,
   GamePieceType.star4: 12,
   GamePieceType.star3: 11,
@@ -30,18 +31,30 @@ Map<GamePieceType, int> gamePieceScore = {
   GamePieceType.triangle1: 3,
   GamePieceType.sergeant: 2,
   GamePieceType.private: 1,
+  GamePieceType.flag: -1
 };
 
 class GamePiece {
   final GamePieceType type;
   final bool isWhite;
+  int? pieceScore;
   String image;
+  String? hideImage;
 
-  GamePiece({required this.type, required this.isWhite, required this.image}) {
+  GamePiece(
+      {required this.type,
+      required this.isWhite,
+      required this.image,
+      this.hideImage,
+      this.pieceScore}) {
     if (isWhite) {
       image = "lib/assets/White_$image";
+      hideImage = "lib/assets/White_blank.png";
     } else {
       image = "lib/assets/Black_$image";
+      hideImage = "lib/assets/Black_blank.png";
     }
+
+    pieceScore = gamePieceScore[type];
   }
 }
