@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/game_piece.dart';
 import 'package:game_of_generals/helper/helper_methods.dart';
@@ -203,7 +201,7 @@ class Gameprovider extends ChangeNotifier {
             return;
           }
 
-          if (capturedPiece!.isWhite) {
+          if (capturedPiece.isWhite) {
             whitePieces.add(capturedPiece);
           } else {
             blackPieces.add(capturedPiece);
@@ -314,7 +312,7 @@ class Gameprovider extends ChangeNotifier {
       isReveal = false;
     }
 
-    whiteTurn = !whiteTurn!;
+    whiteTurn = !whiteTurn;
     playerTurn = whiteTurn ? 2 : 1;
     if (whiteTurn) {
       deadPiecesArray = whitePieces;

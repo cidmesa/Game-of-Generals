@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/screens/game_board.dart';
-import 'package:game_of_generals/provider/GameProvider.dart';
+import 'package:game_of_generals/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {

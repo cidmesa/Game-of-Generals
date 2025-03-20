@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider
-import 'package:game_of_generals/provider/GameProvider.dart'; // Import your GameProvider
+import 'package:game_of_generals/provider/game_provider.dart'; // Import your GameProvider
 
+// ignore: must_be_immutable
 class CenterButton extends StatelessWidget {
   Function onTap;
   final String title;

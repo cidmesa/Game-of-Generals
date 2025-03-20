@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/center_button.dart';
 import 'package:game_of_generals/components/draggable_initialization_square.dart';
-import 'package:game_of_generals/provider/GameProvider.dart';
+import 'package:game_of_generals/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:game_of_generals/components/draggable_board_square.dart';
 import 'package:game_of_generals/components/game_piece.dart';
@@ -42,6 +42,7 @@ class _GameBoardState extends State<GameBoard> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       Provider.of<Gameprovider>(context, listen: false).initializeBoard();
     });
   }
@@ -51,6 +52,7 @@ class _GameBoardState extends State<GameBoard> {
     return Consumer<Gameprovider>(builder: (context, gameProvider, child) {
       if (gameProvider.gameWin) {
         Future.microtask(() => showDialog(
+              // ignore: use_build_context_synchronously
               context: context,
               builder: (
                 context,

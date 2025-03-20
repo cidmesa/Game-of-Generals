@@ -66,7 +66,6 @@ class _DraggableInitializationSquare
               },
               onAcceptWithDetails: (data) {
                 setState(() {
-                  // TODO: State if has piece inside square
                   widget.piece = data.data;
                 });
               },
