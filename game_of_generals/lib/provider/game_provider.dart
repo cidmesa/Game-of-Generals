@@ -302,12 +302,15 @@ class Gameprovider extends ChangeNotifier {
   void newTurn() {
     if (initializing) {
       if (whiteTurn) {
-        selectedPiece = null;
-    selectedRow = -1;
-    selectedCol = -1;
+      selectedPiece = null;
+      selectedRow = -1;
+      selectedCol = -1;
         initializeArray = blackPieces;
         blackPieces = [];
       } else {
+        selectedPiece = null;
+        selectedRow = -1;
+        selectedCol = -1;
         initializing = false;
         isReveal = false;
       }
