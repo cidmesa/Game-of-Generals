@@ -59,8 +59,8 @@ class _GameBoardState extends State<GameBoard> {
               ) =>
                   AlertDialog(
                 title: gameProvider.whiteTurn
-                    ? Text("Player 1 win!")
-                    : Text("Player 2 win!"),
+                    ? Text("White win!")
+                    : Text("Black win!"),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -150,7 +150,7 @@ class _GameBoardState extends State<GameBoard> {
                                 child: gameProvider.initializeArray.isEmpty
                                     ? CenterButton(
                                         title:
-                                            "Player ${gameProvider.playerTurn} turn",
+                                            gameProvider.playerTurn == 1 ? "White's turn" : "Black's Turn",
                                         onTap: gameProvider.newTurn)
                                     : null),
                           if (!gameProvider.initializing)
