@@ -160,7 +160,7 @@ class _GameBoardState extends State<GameBoard> {
                                       ? CenterButton(
                                           // Show "Player 2 turn" after move
                                           title:
-                                              "Player ${gameProvider.playerTurn} turn",
+                                              gameProvider.playerTurn == 1 ? "White's turn" : "Black's Turn",
                                           onTap: gameProvider.newTurn,
                                         )
                                       : null)
