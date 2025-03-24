@@ -59,8 +59,8 @@ class _GameBoardState extends State<GameBoard> {
               ) =>
                   AlertDialog(
                 title: gameProvider.whiteTurn
-                    ? Text("Player 1 win!")
-                    : Text("Player 2 win!"),
+                    ? Text("White win!")
+                    : Text("Black win!"),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -103,42 +103,45 @@ class _GameBoardState extends State<GameBoard> {
                       ),
                       child: Stack(
                         children: [
-                          GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 9,
-                            ),
-                            itemCount: 72,
-                            itemBuilder: (context, index) {
-                              int row = index ~/ 9;
-                              int col = index % 9;
-
-                              bool isSelected =
-                                  gameProvider.selectedRow == row &&
-                                      gameProvider.selectedCol == col;
-
-                              bool isValidMove = false;
-                              for (var position in gameProvider.validMoves) {
-                                if (position[0] == row && position[1] == col) {
-                                  isValidMove = true;
+                          ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                            child: GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 9,
+                              ),
+                              itemCount: 72,
+                              itemBuilder: (context, index) {
+                                int row = index ~/ 9;
+                                int col = index % 9;
+                            
+                                bool isSelected =
+                                    gameProvider.selectedRow == row &&
+                                        gameProvider.selectedCol == col;
+                            
+                                bool isValidMove = false;
+                                for (var position in gameProvider.validMoves) {
+                                  if (position[0] == row && position[1] == col) {
+                                    isValidMove = true;
+                                  }
                                 }
-                              }
-
-                              return DraggableBoardSquare(
-                                piece: gameProvider.board[row][col],
-                                index: index,
-                                isSelected: isSelected,
-                                isValidMove: isValidMove,
-                                isReveal: gameProvider.isReveal,
-                                isWhiteTurn: gameProvider.whiteTurn,
-                                onTap: () => gameProvider.initializing
-                                    ? gameProvider
-                                        .pieceSelectedBoardInitialization(
-                                            row, col)
-                                    : gameProvider.pieceSelected(row, col),
-                              );
-                            },
+                            
+                                return DraggableBoardSquare(
+                                  piece: gameProvider.board[row][col],
+                                  index: index,
+                                  isSelected: isSelected,
+                                  isValidMove: isValidMove,
+                                  isReveal: gameProvider.isReveal,
+                                  isWhiteTurn: gameProvider.whiteTurn,
+                                  onTap: () => gameProvider.initializing
+                                      ? gameProvider
+                                          .pieceSelectedBoardInitialization(
+                                              row, col)
+                                      : gameProvider.pieceSelected(row, col),
+                                );
+                              },
+                            ),
                           ),
 
                           // ✅ Button in the center of the grid
@@ -147,7 +150,7 @@ class _GameBoardState extends State<GameBoard> {
                                 child: gameProvider.initializeArray.isEmpty
                                     ? CenterButton(
                                         title:
-                                            "Player ${gameProvider.playerTurn} turn",
+                                            gameProvider.playerTurn == 1 ? "White's turn" : "Black's Turn",
                                         onTap: gameProvider.newTurn)
                                     : null),
                           if (!gameProvider.initializing)
