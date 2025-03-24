@@ -37,7 +37,7 @@ class Gameprovider extends ChangeNotifier {
 
     whitePieces = [
       // ✅ 1 of each piece
-      /*GamePiece(type: GamePieceType.star5, isWhite: true, image: "5star.png"),
+      GamePiece(type: GamePieceType.star5, isWhite: true, image: "5star.png"),
       GamePiece(type: GamePieceType.star4, isWhite: true, image: "4star.png"),
       GamePiece(type: GamePieceType.star3, isWhite: true, image: "3star.png"),
       GamePiece(type: GamePieceType.star2, isWhite: true, image: "2star.png"),
@@ -52,22 +52,22 @@ class Gameprovider extends ChangeNotifier {
       GamePiece(
           type: GamePieceType.triangle1, isWhite: true, image: "1triangle.png"),
       GamePiece(
-          type: GamePieceType.sergeant, isWhite: true, image: "sergeant.png"),*/
+          type: GamePieceType.sergeant, isWhite: true, image: "sergeant.png"),
       GamePiece(type: GamePieceType.flag, isWhite: true, image: "flag.png"),
 
-      /*// ✅ 6 Privates
+      // ✅ 6 Privates
       for (int i = 0; i < 6; i++)
         GamePiece(
             type: GamePieceType.private, isWhite: true, image: "private.png"),
 
       // ✅ 2 Spies
       for (int i = 0; i < 2; i++)
-        GamePiece(type: GamePieceType.spy, isWhite: true, image: "spy.png"),*/
+        GamePiece(type: GamePieceType.spy, isWhite: true, image: "spy.png"),
     ];
 
     blackPieces = [
       GamePiece(type: GamePieceType.star5, isWhite: false, image: "5star.png"),
-      /*GamePiece(type: GamePieceType.star4, isWhite: false, image: "4star.png"),
+      GamePiece(type: GamePieceType.star4, isWhite: false, image: "4star.png"),
       GamePiece(type: GamePieceType.star3, isWhite: false, image: "3star.png"),
       GamePiece(type: GamePieceType.star2, isWhite: false, image: "2star.png"),
       GamePiece(type: GamePieceType.star1, isWhite: false, image: "1star.png"),
@@ -93,7 +93,7 @@ class Gameprovider extends ChangeNotifier {
       // ✅ 6 Privates
       for (int i = 0; i < 6; i++)
         GamePiece(
-            type: GamePieceType.private, isWhite: false, image: "private.png"),*/
+            type: GamePieceType.private, isWhite: false, image: "private.png"),
 
       // ✅ 2 Spies
       for (int i = 0; i < 2; i++)
