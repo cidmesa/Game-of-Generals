@@ -5,6 +5,7 @@ import 'package:game_of_generals/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:game_of_generals/components/draggable_board_square.dart';
 import 'package:game_of_generals/components/game_piece.dart';
+import 'package:game_of_generals/components/help.dart'; // Import Help
 
 void main() {
   runApp(
@@ -78,6 +79,12 @@ class _GameBoardState extends State<GameBoard> {
           title:
               Text("Game of Generals", style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.redAccent,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.help_outline), // Help Icon
+              onPressed: () => Help.show(context), // Show Help Overlay
+            ),
+          ],
         ),
         body: Column(
           children: [
