@@ -90,7 +90,10 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                         width: 3.0,
                       ),
                     ),
-                    child: Image.asset(widget.piece!.image),
+                    child: Image.asset(widget.isWhiteTurn == widget.piece!.isWhite &&
+                                  widget.isReveal
+                              ? widget.piece!.image
+                              : widget.piece!.hideImage!),
                   ),
                   childWhenDragging: Container(
                     decoration: BoxDecoration(

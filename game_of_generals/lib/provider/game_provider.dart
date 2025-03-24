@@ -102,11 +102,11 @@ class Gameprovider extends ChangeNotifier {
   }
 
   void pieceSelectedBoardInitialization(int row, int col) {
-    if (board[row][col] != null) {
+    if (board[row][col] != null && board[row][col]!.isWhite == whiteTurn) {
       selectedPiece = board[row][col];
       selectedPieceIndex = -1;
       selectedRow = row;
-      selectedCol = col;
+      selectedCol = col;  
     } else if (selectedPieceIndex >= 0 &&
         selectedPieceIndex < initializeArray.length &&
         board[row][col] == null &&
