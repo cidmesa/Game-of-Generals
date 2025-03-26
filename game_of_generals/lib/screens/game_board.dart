@@ -100,6 +100,7 @@ class _GameBoardState extends State<GameBoard> {
                 color: Colors.white,
               ), // Help Icon
               onPressed: () {
+                gameProvider.resetGame(); // Reset the game state
                 context.pop();
               }, // Show Help Overlay
             )
