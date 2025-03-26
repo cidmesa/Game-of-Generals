@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/action_button.dart';
-// import 'package:smart_cy/Components/app_theme.dart';
+import 'package:game_of_generals/provider/game_provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:game_of_generals/components/help.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,13 +39,13 @@ class Home extends StatelessWidget {
                 image: AssetImage("lib/assets/Home_BG.png"),
                 fit: BoxFit.cover)),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: EdgeInsets.only(
                   left: titlePadding,
                   right: titlePadding,
-                  top: titlePadding,
-                  bottom: titlePadding / 2),
+                  bottom: titlePadding),
               child: Image.asset("lib/assets/Title.png"),
             ),
             Container(
@@ -53,13 +56,16 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ActionButton(
-                        onTap: () {},
+                        onTap: () {
+                          context.pushNamed("/GameBoard");
+                          Provider.of<Gameprovider>(context, listen: false).initializeBoard();
+                        },
                         child: Image.asset(
                           "lib/assets/Play_Button.png",
                           height: buttonHeight,
                         )),
                     ActionButton(
-                        onTap: () {},
+                        onTap: () => Help.show(context),
                         child: Image.asset(
                           "lib/assets/Tutorial_Button.png",
                           height: buttonHeight,
