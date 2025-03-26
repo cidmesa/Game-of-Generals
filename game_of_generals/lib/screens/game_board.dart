@@ -52,15 +52,21 @@ class _GameBoardState extends State<GameBoard> {
               ) =>
                   AlertDialog(
                 title: gameProvider.whiteTurn
-                    ? Text("White win!")
-                    : Text("Black win!"),
+                    ? Text("White win!",
+                        style: TextStyle(
+                            fontFamily: 'Eurostile Bold', fontSize: 18))
+                    : Text("Black win!",
+                        style: TextStyle(
+                            fontFamily: 'Eurostile Bold', fontSize: 18)),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop(); // Close dialog
                       gameProvider.resetGame(); // Reset game
                     },
-                    child: const Text("Reset Game"),
+                    child: const Text("Reset Game",
+                        style: TextStyle(
+                            fontFamily: 'Eurostile Bold', fontSize: 18)),
                   )
                 ],
               ),
@@ -125,7 +131,8 @@ class _GameBoardState extends State<GameBoard> {
                         height: (firstGridSize! / 9) * 8,
                         decoration: BoxDecoration(
                           color: Colors.grey[500],
-                          border: Border.all(color: Colors.black, width: 4),
+                          border:
+                              Border.all(color: Color(0xFF00267e), width: 5),
                         ),
                         child: Stack(
                           children: [

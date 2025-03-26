@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
   go_router: ^14.8.1
   provider: ^6.1.2
 
@@ -17,6 +18,18 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+flutter_launcher_icons:
+  image_path: "lib/assets/Logo_Icon.png"
+
+  windows:
+    generate: true
+    image_path: "lib/assets/Logo_Icon.png"
+    icon_size: 48
+
+  macos:
+    generate: true
+    image_path: "lib/assets/Logo_Icon.png"
+  
 flutter:
   uses-material-design: true
 
