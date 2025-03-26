@@ -1,6 +1,6 @@
 name: game_of_generals
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  go_router: ^14.8.1
   provider: ^6.1.2
 
 dev_dependencies:
@@ -16,8 +18,33 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+flutter_launcher_icons:
+  image_path: "lib/assets/Logo_Icon.png"
+
+  windows:
+    generate: true
+    image_path: "lib/assets/Logo_Icon.png"
+    icon_size: 48
+
+  macos:
+    generate: true
+    image_path: "lib/assets/Logo_Icon.png"
+  
 flutter:
   uses-material-design: true
 
   assets:
     - lib/assets/
+
+  fonts:
+    - family: Force Commander
+      fonts:
+        - asset: lib/assets/fonts/forcecommanderexpand.ttf
+
+    - family: Eurostile
+      fonts:
+        - asset: lib/assets/fonts/Eurostile.ttf
+
+    - family: Eurostile Bold
+      fonts:
+        - asset: lib/assets/fonts/Eurostile-Bold Regular.ttf

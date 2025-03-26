@@ -75,7 +75,6 @@ class Help {
     d. The Flag can be eliminated or captured by any piece, including the opponent's Flag.  
     e. Only a Private can eliminate the Spy.  
     f. A Flag that moves into the same square as the opponent’s Flag wins the game.''',
-    
     '''1. The game ends:
     a. When the Flag is eliminated or captured.
     b. When a Flag reaches the opposite end of the board. (restrictions in rule 2)
@@ -101,132 +100,148 @@ class Help {
           ),
 
           // ✅ Main Help Guide Overlay
-          Positioned(
-            top: MediaQuery.of(context).size.height * 0.15,
-            left: 20,
-            right: 20,
+          Center(
             child: StatefulBuilder(
               builder: (context, setState) => Material(
                 color: Colors.transparent,
-                child: Container(
-                  width: double.infinity,
-                  constraints: BoxConstraints(
-                    maxHeight: 500, // ✅ Limits max height of the container
-                  ),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 2),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // ✅ Fixed "Help Guide" Title with Close Button
-                      Stack(
-                        children: [
-                          Center(
-                            child: Text(
-                              "Help Guide", // Fixed title
-                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 100, horizontal: 50),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            spreadRadius: 2),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        // ✅ Fixed "Help Guide" Title with Close Button
+                        Stack(
+                          children: [
+                            Center(
+                              child: Text(
+                                "Help Guide", // Fixed title
+                                style: TextStyle(
+                                    fontFamily: 'Force Commander',
+                                    fontSize: 32,
+                                    color: Color(0xFF00267e)),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                          ),
-                          Positioned(
-                            right: 0,
-                            child: IconButton(
-                              icon: Icon(Icons.close, color: Colors.red, size: 28),
-                              onPressed: () => hide(),
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
+                            Positioned(
+                              right: 0,
+                              child: IconButton(
+                                icon: Icon(Icons.close,
+                                    color: Colors.red, size: 28),
+                                onPressed: () => hide(),
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
 
-                      const SizedBox(height: 5),
+                        const SizedBox(height: 5),
 
-                      // ✅ Dynamic Page Header (Changes per Page)
-                      Text(
-                        _headers[_currentPage - 1], // Dynamic header
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
-                        textAlign: TextAlign.center,
-                      ),
+                        // ✅ Dynamic Page Header (Changes per Page)
+                        Text(
+                          _headers[_currentPage - 1], // Dynamic header
+                          style: TextStyle(
+                              fontFamily: 'Eurostile Bold',
+                              fontSize: 18,
+                              color: Colors.black),
+                          textAlign: TextAlign.center,
+                        ),
 
-                      const SizedBox(height: 10),
+                        const SizedBox(height: 10),
 
-                      // ✅ Scrollable Image & Description
-                      Expanded(
-                        child: Scrollbar(
-                          thumbVisibility: true, // ✅ Shows the scrollbar
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                // ✅ Image (Hidden if no image)
-                                if (_imagePaths[_currentPage - 1] != "")
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: Image.asset(
-                                      _imagePaths[_currentPage - 1],
-                                      fit: BoxFit.contain,
-                                      width: 300, // ✅ Adjust image size
-                                      height: 200,
+                        // ✅ Scrollable Image & Description
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Scrollbar(
+                              thumbVisibility: false, // ✅ Shows the scrollbar
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    // ✅ Image (Hidden if no image)
+                                    if (_imagePaths[_currentPage - 1] != "")
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Image.asset(
+                                          _imagePaths[_currentPage - 1],
+                                          fit: BoxFit.contain,
+                                          width: 300, // ✅ Adjust image size
+                                          height: 200,
+                                        ),
+                                      ),
+
+                                    // ✅ Description Text (Centered)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(
+                                        _descriptions[_currentPage - 1],
+                                        style: TextStyle(
+                                            fontFamily: 'Eurostile',
+                                            fontSize: 16),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                  ),
-
-                                // ✅ Description Text (Centered)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text(
-                                    _descriptions[_currentPage - 1],
-                                    style: TextStyle(fontSize: 16),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 10),
+                        const SizedBox(height: 10),
 
-                      // ✅ Pagination Controls (Fixed at Bottom)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.arrow_back_ios, size: 24),
-                            onPressed: _currentPage > 1
-                                ? () {
-                                    setState(() {
-                                      _currentPage--;
-                                    });
-                                  }
-                                : null,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              "$_currentPage / $_maxPage",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        // ✅ Pagination Controls (Fixed at Bottom)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back_ios, size: 24),
+                              onPressed: _currentPage > 1
+                                  ? () {
+                                      setState(() {
+                                        _currentPage--;
+                                      });
+                                    }
+                                  : null,
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.arrow_forward_ios, size: 24),
-                            onPressed: _currentPage < _maxPage
-                                ? () {
-                                    setState(() {
-                                      _currentPage++;
-                                    });
-                                  }
-                                : null,
-                          ),
-                        ],
-                      ),
-                    ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                "$_currentPage / $_maxPage",
+                                style: TextStyle(
+                                    fontFamily: 'Eurostile Bold', fontSize: 16),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.arrow_forward_ios, size: 24),
+                              onPressed: _currentPage < _maxPage
+                                  ? () {
+                                      setState(() {
+                                        _currentPage++;
+                                      });
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

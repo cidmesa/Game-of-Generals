@@ -21,13 +21,15 @@ class CenterButton extends StatelessWidget {
                 onTap();
               },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFF00267e),
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(
               horizontal: 12, vertical: 8), // Smaller padding
           minimumSize: const Size(80, 40), // Set minimum width and height
         ),
-        child: Text(title, style: TextStyle(fontSize: 14)), // Smaller text
+        child: Text(title,
+            style: TextStyle(
+                fontFamily: 'Eurostile Bold', fontSize: 18)), // Smaller text
       ),
     );
   }
