@@ -49,10 +49,10 @@ class GamePiece {
       this.pieceScore}) {
     if (isWhite) {
       image = "lib/assets/White_$image";
-      hideImage = "lib/assets/White_blank.png";
+      hideImage = "lib/assets/Back_White.png";
     } else {
       image = "lib/assets/Black_$image";
-      hideImage = "lib/assets/Black_blank.png";
+      hideImage = "lib/assets/Back_Black.png";
     }
 
     pieceScore = gamePieceScore[type];
