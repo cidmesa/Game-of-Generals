@@ -79,8 +79,6 @@ class Help {
     '''1. The game ends:
     a. When the Flag is eliminated or captured.
     b. When a Flag reaches the opposite end of the board. (restrictions in rule 2)
-    c. When a player resigns.
-    d. When both players agree on a drawn position.
 
     2. A Flag reaching the opposite end of the board may still be eliminated by an opposing piece occupying a square adjacent to the one reached by the Flag. 
     In order to win, the Flag should at least be two square or two ahead of any opposing piece. ''',
