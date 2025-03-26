@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:game_of_generals/screens/game_board.dart';
 import 'package:game_of_generals/provider/game_provider.dart';
+import 'package:game_of_generals/screens/home.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -13,7 +13,11 @@ void main() {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: GameBoard(),
+        home: Scaffold(
+            backgroundColor: Colors.black,
+            body: Center(
+              child: AspectRatio(aspectRatio: 16 / 9, child: Home()),
+            )),
       ),
     ),
   );
