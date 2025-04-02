@@ -383,7 +383,8 @@ class AIGameprovider extends ChangeNotifier {
     if (!whiteTurn && !initializing) {
       // Add a small delay to make it feel more natural
       Future.delayed(Duration(milliseconds: 1000), () {
-        makeAIMove(); // Make the AI move
+        if(!gameWin)
+        {makeAIMove();} // Make the AI move
         Future.delayed(Duration(milliseconds: 1000), () {
           whiteTurn = !whiteTurn; // Switch back to player's turn
           reveal();
@@ -507,7 +508,7 @@ class AIGameprovider extends ChangeNotifier {
 
   // AI MOVE LOGIC
   void makeAIMove() {
-    if (whiteTurn) return; // Only make moves when it's AI's turn (black)
+    if (whiteTurn || gameWin) return; // Only make moves when it's AI's turn (black)
 
     // Create a list of potential moves for all AI pieces
     List<Map<String, dynamic>> allPossibleMoves = [];
