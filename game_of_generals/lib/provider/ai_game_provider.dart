@@ -387,8 +387,8 @@ class AIGameprovider extends ChangeNotifier {
           makeAIMove();
         } // Make the AI move
         Future.delayed(Duration(milliseconds: 1000), () {
-          if (!gameWin) {
-            whiteTurn = !whiteTurn; // Switch back to player's turn
+          whiteTurn = !whiteTurn;
+          if (!gameWin) { // Switch back to player's turn
             reveal();
             playerTurn = 2;
             deadPiecesArray = whitePieces;
