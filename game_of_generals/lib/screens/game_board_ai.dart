@@ -192,7 +192,7 @@ class _AIGameBoardState extends State<AIGameBoard> {
                             if (!gameProvider.initializing)
                               Center(
                                 child: 
-                                     (gameProvider.isMoved
+                                    (gameProvider.isMoved
                                         ? AICenterButton(
                                             // Show "AI's turn" after move
                                             title: gameProvider.whiteTurn
@@ -200,8 +200,7 @@ class _AIGameBoardState extends State<AIGameBoard> {
                                                 : "AI's Turn", // Changed from "Black's Turn"
                                             onTap: gameProvider.whiteTurn ? gameProvider.newTurn : (){},
                                           )
-                                        : null)
-                                    ,
+                                        : null),
                               ),
                           ],
                         ),
