@@ -393,6 +393,7 @@ class AIGameprovider extends ChangeNotifier {
           flipBoard(); // Flip the board back// Hide the board again
           notifyListeners();}
       });
+      });
     }
 
     notifyListeners();
