@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:game_of_generals/components/center_button.dart';
+import 'package:game_of_generals/components/ai_center_button.dart';
 import 'package:game_of_generals/components/draggable_initialization_square.dart';
-import 'package:game_of_generals/provider/pvp_game_provider.dart';
+import 'package:game_of_generals/provider/ai_game_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:game_of_generals/components/draggable_board_square.dart';
@@ -13,24 +13,24 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => PvpGameprovider(),
+          create: (context) => AIGameprovider(),
         )
       ],
       child: const MaterialApp(
-        home: GameBoard(),
+        home: AIGameBoard(),
       ),
     ),
   );
 }
 
-class GameBoard extends StatefulWidget {
-  const GameBoard({super.key});
+class AIGameBoard extends StatefulWidget {
+  const AIGameBoard({super.key});
 
   @override
-  State<GameBoard> createState() => _GameBoardState();
+  State<AIGameBoard> createState() => _AIGameBoardState();
 }
 
-class _GameBoardState extends State<GameBoard> {
+class _AIGameBoardState extends State<AIGameBoard> {
   late GamePiece whiteGeneral5;
   late GamePiece whiteGeneral4;
 
@@ -42,7 +42,7 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PvpGameprovider>(builder: (context, gameProvider, child) {
+    return Consumer<AIGameprovider>(builder: (context, gameProvider, child) {
       if (gameProvider.gameWin) {
         Future.microtask(() => showDialog(
               // ignore: use_build_context_synchronously
@@ -55,7 +55,7 @@ class _GameBoardState extends State<GameBoard> {
                     ? Text("White win!",
                         style: TextStyle(
                             fontFamily: 'Eurostile Bold', fontSize: 18))
-                    : Text("Black win!",
+                    : Text("AI wins!",  // Changed from "Black win!" to "AI wins!"
                         style: TextStyle(
                             fontFamily: 'Eurostile Bold', fontSize: 18)),
                 actions: [
@@ -185,29 +185,23 @@ class _GameBoardState extends State<GameBoard> {
                             if (gameProvider.initializing)
                               Center(
                                   child: gameProvider.initializeArray.isEmpty
-                                      ? CenterButton(
-                                          title: gameProvider.playerTurn == 1
-                                              ? "White's turn"
-                                              : "Black's Turn",
+                                      ? AICenterButton(
+                                          title: "Continue", // Changed button text
                                           onTap: gameProvider.newTurn)
                                       : null),
                             if (!gameProvider.initializing)
                               Center(
-                                child: gameProvider.isReveal
-                                    ? (gameProvider.isMoved
-                                        ? CenterButton(
-                                            // Show "Player 2 turn" after move
-                                            title: gameProvider.playerTurn == 1
-                                                ? "White's turn"
-                                                : "Black's Turn",
-                                            onTap: gameProvider.newTurn,
+                                child: 
+                                     (gameProvider.isMoved
+                                        ? AICenterButton(
+                                            // Show "AI's turn" after move
+                                            title: gameProvider.whiteTurn
+                                                ? "Continue" // Changed from "White's turn"
+                                                : "AI's Turn", // Changed from "Black's Turn"
+                                            onTap: gameProvider.whiteTurn ? gameProvider.newTurn : (){},
                                           )
                                         : null)
-                                    : CenterButton(
-                                        // Default reveal button
-                                        title: "Reveal",
-                                        onTap: gameProvider.reveal,
-                                      ),
+                                    ,
                               ),
                           ],
                         ),

@@ -90,10 +90,12 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                         width: 3.0,
                       ),
                     ),
-                    child: Image.asset(widget.isWhiteTurn == widget.piece!.isWhite &&
-                                  widget.isReveal
-                              ? widget.piece!.image
-                              : widget.piece!.hideImage!),
+                    child: Image.asset(
+                      widget.isWhiteTurn == widget.piece!.isWhite &&
+                              widget.isReveal
+                          ? widget.piece!.image
+                          : widget.piece!.hideImage!,
+                    ),
                   ),
                   childWhenDragging: Container(
                     decoration: BoxDecoration(
@@ -115,10 +117,11 @@ class _DraggableBoardSquareState extends State<DraggableBoardSquare> {
                     ),
                     child: Center(
                       child: Image.asset(
-                          widget.isWhiteTurn == widget.piece!.isWhite &&
-                                  widget.isReveal
-                              ? widget.piece!.image
-                              : widget.piece!.hideImage!),
+                        widget.isWhiteTurn == widget.piece!.isWhite &&
+                                widget.isReveal
+                            ? widget.piece!.image
+                            : widget.piece!.hideImage!,
+                      ),
                     ),
                   ),
                 );

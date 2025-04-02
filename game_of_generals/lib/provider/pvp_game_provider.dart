@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/game_piece.dart';
 import 'package:game_of_generals/helper/helper_methods.dart';
 
-class Gameprovider extends ChangeNotifier {
+class PvpGameprovider extends ChangeNotifier {
   late List<List<GamePiece?>> board;
 
   List<List<int>> validMoves = [];
@@ -101,6 +101,7 @@ class Gameprovider extends ChangeNotifier {
     ];
     initializeArray = whitePieces;
     whitePieces = [];
+    deadPiecesArray = [];
   }
 
   void pieceSelectedBoardInitialization(int row, int col) {
@@ -108,7 +109,7 @@ class Gameprovider extends ChangeNotifier {
       selectedPiece = board[row][col];
       selectedPieceIndex = -1;
       selectedRow = row;
-      selectedCol = col;  
+      selectedCol = col;
     } else if (selectedPieceIndex >= 0 &&
         selectedPieceIndex < initializeArray.length &&
         board[row][col] == null &&
@@ -245,12 +246,15 @@ class Gameprovider extends ChangeNotifier {
       board[selectedRow][selectedCol] = null;
 
       if (newRow == 0 && selectedPiece?.type == GamePieceType.flag) {
-      final leftPiece = newCol > 0 ? board[newRow][newCol - 1] : null;
-      final rightPiece = newCol < board[0].length - 1 ? board[newRow][newCol + 1] : null;
+        final leftPiece = newCol > 0 ? board[newRow][newCol - 1] : null;
+        final rightPiece =
+            newCol < board[0].length - 1 ? board[newRow][newCol + 1] : null;
 
         if (leftPiece != null || rightPiece != null) {
-          if ((leftPiece != null && leftPiece.isWhite != selectedPiece!.isWhite) ||
-              (rightPiece != null && rightPiece.isWhite != selectedPiece!.isWhite)) {
+          if ((leftPiece != null &&
+                  leftPiece.isWhite != selectedPiece!.isWhite) ||
+              (rightPiece != null &&
+                  rightPiece.isWhite != selectedPiece!.isWhite)) {
             pendingWin = true;
           } else {
             gameWin = true;
@@ -315,9 +319,9 @@ class Gameprovider extends ChangeNotifier {
   void newTurn() {
     if (initializing) {
       if (whiteTurn) {
-      selectedPiece = null;
-      selectedRow = -1;
-      selectedCol = -1;
+        selectedPiece = null;
+        selectedRow = -1;
+        selectedCol = -1;
         initializeArray = blackPieces;
         blackPieces = [];
       } else {
@@ -340,13 +344,13 @@ class Gameprovider extends ChangeNotifier {
     }
 
     flipBoard();
-    if(pendingWin){
-        for (var piece in board[0]) {
-            if (piece != null && piece.type == GamePieceType.flag ){
-              gameWin = true;
-              isReveal = true;
-            }
+    if (pendingWin) {
+      for (var piece in board[0]) {
+        if (piece != null && piece.type == GamePieceType.flag) {
+          gameWin = true;
+          isReveal = true;
         }
+      }
     }
     notifyListeners();
   }

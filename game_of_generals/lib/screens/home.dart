@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_of_generals/components/action_button.dart';
-import 'package:game_of_generals/provider/game_provider.dart';
+import 'package:game_of_generals/provider/ai_game_provider.dart';
+import 'package:game_of_generals/provider/pvp_game_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:game_of_generals/components/help.dart';
 import 'package:provider/provider.dart';
@@ -58,10 +59,21 @@ class Home extends StatelessWidget {
                     ActionButton(
                         onTap: () {
                           context.pushNamed("/GameBoard");
-                          Provider.of<Gameprovider>(context, listen: false).initializeBoard();
+                          Provider.of<PvpGameprovider>(context, listen: false)
+                              .initializeBoard();
                         },
                         child: Image.asset(
-                          "lib/assets/Play_Button.png",
+                          "lib/assets/pvp_button.png",
+                          height: buttonHeight,
+                        )),
+                    ActionButton(
+                        onTap: () {
+                          context.pushNamed("/GameBoardAI");
+                          Provider.of<AIGameprovider>(context, listen: false)
+                              .initializeBoard();
+                        },
+                        child: Image.asset(
+                          "lib/assets/ai_button.png",
                           height: buttonHeight,
                         )),
                     ActionButton(

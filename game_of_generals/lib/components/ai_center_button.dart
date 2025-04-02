@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:game_of_generals/provider/pvp_game_provider.dart';
-import 'package:provider/provider.dart'; // Import Provider // Import your GameProvider
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:game_of_generals/provider/ai_game_provider.dart'; // Import your GameProvider
 
 // ignore: must_be_immutable
-class CenterButton extends StatelessWidget {
+class AICenterButton extends StatelessWidget {
   Function onTap;
   final String title;
-  CenterButton({super.key, required this.onTap, required this.title});
+  AICenterButton({super.key, required this.onTap, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    final gameProvider = Provider.of<PvpGameprovider>(context);
+    final gameProvider = Provider.of<AIGameprovider>(context);
     return Container(
       height: 60, // Reduce height to make the space around the button smaller
       alignment: Alignment.center,
