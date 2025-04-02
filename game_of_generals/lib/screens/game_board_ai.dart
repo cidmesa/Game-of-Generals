@@ -80,7 +80,7 @@ class _AIGameBoardState extends State<AIGameBoard> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.asset(
-                "lib/assets/Title.png",
+                "lib/assets/Title2.png",
                 fit: BoxFit.fitHeight,
               ),
             ),

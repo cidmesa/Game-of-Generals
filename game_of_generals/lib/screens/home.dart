@@ -47,7 +47,7 @@ class Home extends StatelessWidget {
                   left: titlePadding,
                   right: titlePadding,
                   bottom: titlePadding),
-              child: Image.asset("lib/assets/Title.png"),
+              child: Image.asset("lib/assets/Title2.png"),
             ),
             Container(
               color: Color(0xFF00267e).withValues(alpha: 0.5),
