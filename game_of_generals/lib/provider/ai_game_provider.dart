@@ -385,6 +385,7 @@ class AIGameprovider extends ChangeNotifier {
       Future.delayed(Duration(milliseconds: 1000), () {
         if(!gameWin)
         {makeAIMove(); }// Make the AI move
+        Future.delayed(Duration(milliseconds: 1000), () {
         if(!gameWin)
           {whiteTurn = !whiteTurn; // Switch back to player's turn
           reveal();
@@ -392,6 +393,7 @@ class AIGameprovider extends ChangeNotifier {
           deadPiecesArray = whitePieces;
           flipBoard(); // Flip the board back// Hide the board again
           notifyListeners();}
+      });
       });
     }
 
