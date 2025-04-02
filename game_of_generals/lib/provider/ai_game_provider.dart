@@ -383,15 +383,19 @@ class AIGameprovider extends ChangeNotifier {
     if (!whiteTurn && !initializing) {
       // Add a small delay to make it feel more natural
       Future.delayed(Duration(milliseconds: 1000), () {
-        if(!gameWin)
-        {makeAIMove(); }// Make the AI move
-        if(!gameWin)
-          {whiteTurn = !whiteTurn; // Switch back to player's turn
-          reveal();
-          playerTurn = 2;
-          deadPiecesArray = whitePieces;
-          flipBoard(); // Flip the board back// Hide the board again
-          notifyListeners();}
+        if (!gameWin) {
+          makeAIMove();
+        } // Make the AI move
+        Future.delayed(Duration(milliseconds: 1000), () {
+          if (!gameWin) {
+            whiteTurn = !whiteTurn; // Switch back to player's turn
+            reveal();
+            playerTurn = 2;
+            deadPiecesArray = whitePieces;
+            flipBoard(); // Flip the board back// Hide the board again
+            notifyListeners();
+          }
+        });
       });
     }
 
