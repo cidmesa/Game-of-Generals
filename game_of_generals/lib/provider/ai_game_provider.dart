@@ -420,7 +420,7 @@ class AIGameprovider extends ChangeNotifier {
     // Shuffle pieces to randomize their order
     initializeArray.shuffle(random);
 
-    // Create a 4x9 occupancy grid to track placed pieces
+    // Create a 3x9 occupancy grid to track placed pieces
     List<List<bool>> occupiedCells =
         List.generate(3, (row) => List.generate(9, (col) => false));
 
