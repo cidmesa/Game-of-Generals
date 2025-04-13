@@ -8,11 +8,8 @@ class AIGameprovider extends ChangeNotifier {
   List<List<int>> validMoves = [];
 
   List<GamePiece> whitePieces = [];
-
   List<GamePiece> blackPieces = [];
-
   List<GamePiece> initializeArray = [];
-
   List<GamePiece> deadPiecesArray = [];
 
   GamePiece? selectedPiece;
@@ -27,10 +24,24 @@ class AIGameprovider extends ChangeNotifier {
   bool isMoved = false;
   bool gameWin = false;
   bool pendingWin = false;
-  //bool isAIMode = true; // Flag to track AI mode
 
-  // AI-related variables
+  // AI settings
+  int _aiDifficulty = 3; // 1=easy, 2=medium, 3=hard
   Random random = Random();
+
+  // Minimax depth settings based on difficulty
+  Map<int, int> _difficultyDepth = {
+    1: 1, // Easy: Look ahead 1 move
+    2: 3, // Medium: Look ahead 3 moves
+    3: 5, // Hard: Look ahead 5 moves
+  };
+
+  // Set AI difficulty
+  void setAIDifficulty(int difficulty) {
+    if (difficulty >= 1 && difficulty <= 3) {
+      _aiDifficulty = difficulty;
+    }
+  }
 
   void initializeBoard() {
     List<List<GamePiece?>> newBoard =
@@ -345,7 +356,6 @@ class AIGameprovider extends ChangeNotifier {
           // Skip black's turn completely
           initializing = false;
           isReveal = true;
-          //flipBoard();
           notifyListeners();
           return;
         }
@@ -388,11 +398,12 @@ class AIGameprovider extends ChangeNotifier {
         } // Make the AI move
         Future.delayed(Duration(milliseconds: 1000), () {
           whiteTurn = !whiteTurn;
-          if (!gameWin) { // Switch back to player's turn
+          if (!gameWin) {
+            // Switch back to player's turn
             reveal();
             playerTurn = 2;
             deadPiecesArray = whitePieces;
-            flipBoard(); // Flip the board back// Hide the board again
+            flipBoard(); // Flip the board back
             notifyListeners();
           }
         });
@@ -470,7 +481,7 @@ class AIGameprovider extends ChangeNotifier {
     for (int i = 0; i < protectionPieceCount; i++) {
       int row = protectionPositions[i][0];
       int col = protectionPositions[i][1];
-      if (isInBoard(row, col) && !occupiedCells[row][col]) {
+      if (isInBoard(row, col) && row < 3 && !occupiedCells[row][col]) {
         board[row][col] = highRankPieces[i];
         occupiedCells[row][col] = true;
       }
@@ -485,7 +496,7 @@ class AIGameprovider extends ChangeNotifier {
     ];
     remainingPieces.shuffle(random);
 
-    // Place remaining pieces randomly within 4 rows and 9 columns
+    // Place remaining pieces randomly within 3 rows and 9 columns
     List<List<int>> availablePositions = [];
     for (int row = 0; row < 3; row++) {
       for (int col = 0; col < 9; col++) {
@@ -509,179 +520,549 @@ class AIGameprovider extends ChangeNotifier {
     initializeArray = [];
   }
 
-  // AI MOVE LOGIC
+  // MINIMAX AI IMPLEMENTATION
   void makeAIMove() {
-    if (whiteTurn || gameWin) return; // Only make moves when it's AI's turn (black)
+    if (whiteTurn || gameWin)
+      return; // Only make moves when it's AI's turn (black)
 
-    // Create a list of potential moves for all AI pieces
-    List<Map<String, dynamic>> allPossibleMoves = [];
+    // Get the minimax depth based on difficulty
+    int depth = _difficultyDepth[_aiDifficulty] ?? 3;
 
-    // Check each cell for AI pieces
-    for (int row = 0; row < 8; row++) {
-      for (int col = 0; col < 9; col++) {
-        GamePiece? piece = board[row][col];
-
-        // If the cell has an AI piece (black)
-        if (piece != null && !piece.isWhite) {
-          // Calculate valid moves for this piece
-          List<List<int>> pieceMoves = calculateMoves(row, col);
-
-          // Add each valid move to our list with evaluation data
-          for (var move in pieceMoves) {
-            int targetRow = move[0];
-            int targetCol = move[1];
-            double moveScore = evaluateMove(row, col, targetRow, targetCol);
-
-            allPossibleMoves.add({
-              'fromRow': row,
-              'fromCol': col,
-              'toRow': targetRow,
-              'toCol': targetCol,
-              'piece': piece,
-              'score': moveScore,
-            });
-          }
-        }
+    // Use a small depth for easy AI or add randomness
+    if (_aiDifficulty == 1) {
+      // Easy mode: 33% chance to make a random move instead of minimax
+      if (random.nextDouble() < 0.33) {
+        makeRandomMove();
+        return;
       }
     }
 
-    // If we have valid moves
-    if (allPossibleMoves.isNotEmpty) {
-      // Sort moves by score (higher is better)
-      allPossibleMoves.sort((a, b) => b['score'].compareTo(a['score']));
+    // Start minimax algorithm
+    Move bestMove = findBestMove(depth);
+    print("asdfafdsa");
+    // Execute the best move
+    if (bestMove.fromRow != -1) {
+      selectedPiece = board[bestMove.fromRow][bestMove.fromCol];
+      selectedRow = bestMove.fromRow;
+      selectedCol = bestMove.fromCol;
+      movePiece(bestMove.toRow, bestMove.toCol);
+      notifyListeners();
+    } else {
+      // Fallback to random move if no good move found
+      makeRandomMove();
+    }
+  }
 
-      // Add some randomness to avoid predictable behavior
-      // Pick from top 3 moves (or fewer if we don't have 3)
-      int choiceLimit =
-          allPossibleMoves.length < 3 ? allPossibleMoves.length : 3;
-      int selectedMoveIndex = random.nextInt(choiceLimit);
-      var selectedMove = allPossibleMoves[selectedMoveIndex];
+  // Make a random legal move
+  void makeRandomMove() {
+    List<Move> allMoves =
+        getAllPossibleMoves(false); // false = AI's turn (black)
 
-      // Execute the chosen move
-      selectedPiece = board[selectedMove['fromRow']][selectedMove['fromCol']];
-      selectedRow = selectedMove['fromRow'];
-      selectedCol = selectedMove['fromCol'];
-      movePiece(selectedMove['toRow'], selectedMove['toCol']);
+    if (allMoves.isNotEmpty) {
+      Move randomMove = allMoves[random.nextInt(allMoves.length)];
+      selectedPiece = board[randomMove.fromRow][randomMove.fromCol];
+      selectedRow = randomMove.fromRow;
+      selectedCol = randomMove.fromCol;
+      movePiece(randomMove.toRow, randomMove.toCol);
     }
 
     notifyListeners();
   }
 
-  // Evaluate how good a move is (higher score = better move)
-  double evaluateMove(int fromRow, int fromCol, int toRow, int toCol) {
-    double score = 0.0;
-    GamePiece? movingPiece = board[fromRow][fromCol];
-    GamePiece? targetPiece = board[toRow][toCol];
+  // Find the best move using minimax with alpha-beta pruning
+  Move findBestMove(int depth) {
+    Move bestMove = Move(-1, -1, -1, -1, -1000);
+    double alpha = double.negativeInfinity;
+    double beta = double.infinity;
+    bool isMaximizingPlayer = false; // AI is minimizing (black)
 
-    // Base score - slightly favor forward movement (toward player's pieces)
-    score += (fromRow - toRow) * 0.5;
+    // Get all possible moves for the current player
+    List<Move> possibleMoves = getAllPossibleMoves(isMaximizingPlayer);
 
-    // If this is a capture move
-    if (targetPiece != null) {
-      // Flag capture is highest priority
-      if (targetPiece.type == GamePieceType.flag) {
-        return 1000.0; // Immediate win, highest priority
+    // If no moves available, return invalid move
+    if (possibleMoves.isEmpty) {
+      return bestMove;
+    }
+
+    // Shuffle moves to add variety to equally scored positions
+    possibleMoves.shuffle(random);
+
+    // Try each move and evaluate
+    for (Move move in possibleMoves) {
+      // Make the move
+      GamePiece? capturedPiece = makeTemporaryMove(move);
+
+      // Get score from minimax
+      double score = minimax(depth - 1, alpha, beta, !isMaximizingPlayer);
+
+      // Undo the move
+      undoTemporaryMove(move, capturedPiece);
+
+      // Update best move if better score found
+      if (score < bestMove.score) {
+        // AI is minimizing
+        bestMove =
+            Move(move.fromRow, move.fromCol, move.toRow, move.toCol, score);
       }
 
-      // Determine if we can win this battle
-      bool canWin = false;
-      bool drawLikely = false;
+      // Update alpha
+      beta = min(beta, score);
 
-      // Check special cases first
-      if (movingPiece!.type == GamePieceType.spy &&
-          targetPiece.pieceScore == 1) {
-        // Spy can't capture private
-        canWin = false;
-      } else if (movingPiece.pieceScore == 1 &&
-          targetPiece.type == GamePieceType.spy) {
-        // Private can capture spy
-        canWin = true;
-      } else if (movingPiece.pieceScore == targetPiece.pieceScore) {
-        // Same rank results in both pieces removed
-        drawLikely = true;
-      } else {
-        // Normal rank comparison
-        canWin = movingPiece.pieceScore! > targetPiece.pieceScore!;
-      }
-
-      if (canWin) {
-        // Prioritize capturing higher-value pieces
-        score += 10.0 + targetPiece.pieceScore!;
-      } else if (drawLikely) {
-        // Consider draws based on piece value difference
-        if (movingPiece.pieceScore! < targetPiece.pieceScore!) {
-          // Trading up is good
-          score += 5.0 + (targetPiece.pieceScore! - movingPiece.pieceScore!);
-        } else {
-          // Trading equal or down is less desirable but sometimes acceptable
-          score += 2.0;
-        }
-      } else {
-        // Avoid losing pieces
-        score -= 20.0;
-      }
-    } else {
-      // Non-capture move evaluation
-
-      // Protect the flag - don't move it unless necessary
-      if (movingPiece!.type == GamePieceType.flag) {
-        score -= 15.0;
-      }
-
-      // Advance strong pieces toward enemy
-      if (movingPiece.pieceScore! >= 10) {
-        // High ranking officers
-        score += 3.0;
-      }
-
-      // Advance spies selectively
-      if (movingPiece.type == GamePieceType.spy) {
-        score += 2.0;
-      }
-
-      // Consider proximity to enemy pieces
-      int enemyPiecesNearby = countNearbyEnemies(toRow, toCol);
-      if (movingPiece.pieceScore! > 5) {
-        // Strong pieces can approach enemies
-        score += enemyPiecesNearby * 1.0;
-      } else {
-        // Weaker pieces should be more cautious
-        score -= enemyPiecesNearby * 0.5;
+      // Alpha-beta pruning
+      if (alpha >= beta) {
+        break;
       }
     }
 
-    // Add slight randomness to avoid predictable patterns
-    score += random.nextDouble() * 2.0;
+    // Add some randomness for lower difficulties
+    if (_aiDifficulty < 3 && possibleMoves.length > 1) {
+      // For Medium difficulty, 15% chance to not pick the absolute best move
+      if (_aiDifficulty == 2 && random.nextDouble() < 0.15) {
+        return possibleMoves[random.nextInt(possibleMoves.length)];
+      }
+    }
+
+    return bestMove;
+  }
+
+  // Minimax algorithm with alpha-beta pruning
+  double minimax(
+      int depth, double alpha, double beta, bool isMaximizingPlayer) {
+    // Terminal conditions
+    if (gameWin) {
+      return isMaximizingPlayer ? -1000 : 1000; // Win/loss scores
+    }
+
+    // Reached depth limit
+    if (depth == 0) {
+      return evaluateBoard();
+    }
+
+    List<Move> possibleMoves = getAllPossibleMoves(isMaximizingPlayer);
+
+    // No valid moves - stalemate
+    if (possibleMoves.isEmpty) {
+      return 0;
+    }
+
+    if (isMaximizingPlayer) {
+      double maxEval = double.negativeInfinity;
+
+      for (Move move in possibleMoves) {
+        GamePiece? capturedPiece = makeTemporaryMove(move);
+        double eval = minimax(depth - 1, alpha, beta, false);
+        undoTemporaryMove(move, capturedPiece);
+
+        maxEval = max(maxEval, eval);
+        alpha = max(alpha, eval);
+        if (beta <= alpha) {
+          break; // Beta cutoff
+        }
+      }
+
+      return maxEval;
+    } else {
+      double minEval = double.infinity;
+
+      for (Move move in possibleMoves) {
+        GamePiece? capturedPiece = makeTemporaryMove(move);
+        double eval = minimax(depth - 1, alpha, beta, true);
+        undoTemporaryMove(move, capturedPiece);
+
+        minEval = min(minEval, eval);
+        beta = min(beta, eval);
+        if (beta <= alpha) {
+          break; // Alpha cutoff
+        }
+      }
+
+      return minEval;
+    }
+  }
+
+  // Get all possible moves for the current player
+  List<Move> getAllPossibleMoves(bool isWhitePlayer) {
+    List<Move> moves = [];
+
+    for (int row = 0; row < 8; row++) {
+      for (int col = 0; col < 9; col++) {
+        GamePiece? piece = board[row][col];
+
+        // If cell has a piece of the current player
+        if (piece != null && piece.isWhite == isWhitePlayer) {
+          List<List<int>> validPositions = calculateMoves(row, col);
+
+          for (var position in validPositions) {
+            int newRow = position[0];
+            int newCol = position[1];
+
+            // Calculate move score using static evaluation
+            double moveScore = evaluateMoveScore(row, col, newRow, newCol);
+            moves.add(Move(row, col, newRow, newCol, moveScore));
+          }
+        }
+      }
+    }
+
+    return moves;
+  }
+
+  // Make a temporary move for minimax evaluation
+  GamePiece? makeTemporaryMove(Move move) {
+    GamePiece? capturedPiece = board[move.toRow][move.toCol];
+    GamePiece? movingPiece = board[move.fromRow][move.fromCol];
+
+    if (capturedPiece != null) {
+      // Handle piece capture according to game rules
+      // (Simplified for minimax - just store the captured piece)
+      board[move.toRow][move.toCol] = movingPiece;
+      board[move.fromRow][move.fromCol] = null;
+    } else {
+      // Simple move
+      board[move.toRow][move.toCol] = movingPiece;
+      board[move.fromRow][move.fromCol] = null;
+    }
+
+    return capturedPiece;
+  }
+
+  // Undo a temporary move
+  void undoTemporaryMove(Move move, GamePiece? capturedPiece) {
+    GamePiece? movingPiece = board[move.toRow][move.toCol];
+
+    // Restore the board state
+    board[move.fromRow][move.fromCol] = movingPiece;
+    board[move.toRow][move.toCol] = capturedPiece;
+  }
+
+  // Evaluate the current board state (static evaluation)
+  double evaluateBoard() {
+    double score = 0.0;
+
+    // Material advantage
+    for (int row = 0; row < 8; row++) {
+      for (int col = 0; col < 9; col++) {
+        GamePiece? piece = board[row][col];
+        if (piece != null) {
+          // Piece value based on rank
+          double pieceValue = pieceValueFactor(piece);
+
+          // White pieces add to score, black pieces subtract
+          if (piece.isWhite) {
+            score += pieceValue;
+
+            // Bonus for advancing flag
+            if (piece.type == GamePieceType.flag) {
+              score += (7 - row) * 2.0; // More points as flag moves forward
+            }
+          } else {
+            score -= pieceValue;
+
+            // Bonus for advancing flag
+            if (piece.type == GamePieceType.flag) {
+              score -= row * 2.0; // More points as flag moves forward
+            }
+          }
+
+          // Mobility factor
+          List<List<int>> pieceMoves = calculateMoves(row, col);
+          double mobilityFactor = pieceMoves.length * 0.1;
+          // Apply mobility factor to score
+          if (piece.isWhite) {
+            score += mobilityFactor;
+          } else {
+            score -= mobilityFactor;
+          }
+
+          // Position evaluation
+          score += evaluatePosition(piece, row, col);
+        }
+      }
+    }
+
+    // Check for flag capture threats
+    score += evaluateFlagSafety();
 
     return score;
   }
 
-  // Count enemy pieces in adjacent squares
-  int countNearbyEnemies(int row, int col) {
-    int count = 0;
-    var directions = [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1]
-    ];
+  // Helper method to determine piece value based on rank
+  double pieceValueFactor(GamePiece piece) {
+    switch (piece.type) {
+      case GamePieceType.flag:
+        return 100.0; // Flag is most valuable
+      case GamePieceType.star5:
+        return 15.0;
+      case GamePieceType.star4:
+        return 14.0;
+      case GamePieceType.star3:
+        return 13.0;
+      case GamePieceType.star2:
+        return 12.0;
+      case GamePieceType.star1:
+        return 11.0;
+      case GamePieceType.sun3:
+        return 10.0;
+      case GamePieceType.sun2:
+        return 9.0;
+      case GamePieceType.sun1:
+        return 8.0;
+      case GamePieceType.triangle3:
+        return 7.0;
+      case GamePieceType.triangle2:
+        return 6.0;
+      case GamePieceType.triangle1:
+        return 5.0;
+      case GamePieceType.sergeant:
+        return 4.0;
+      case GamePieceType.private:
+        return 2.0;
+      case GamePieceType.spy:
+        return 3.0;
+      default:
+        return 1.0;
+    }
+  }
 
-    for (var dir in directions) {
-      int newRow = row + dir[0];
-      int newCol = col + dir[1];
+  // Evaluate the position of a piece on the board
+  double evaluatePosition(GamePiece piece, int row, int col) {
+    double positionValue = 0.0;
 
-      if (isInBoard(newRow, newCol) &&
-          board[newRow][newCol] != null &&
-          board[newRow][newCol]!.isWhite) {
-        count++;
+    // Flag positioning - prefer back rank for safety
+    if (piece.type == GamePieceType.flag) {
+      if (piece.isWhite) {
+        positionValue -= row * 0.5; // Penalize white flag moving forward
+      } else {
+        positionValue += (7 - row) * 0.5; // Penalize black flag moving forward
+      }
+
+      // Bonus for having the flag in a corner or edge (harder to capture)
+      if (col == 0 || col == 8 || row == 0 || row == 7) {
+        positionValue += 1.0;
+      }
+    }
+    // High rank pieces positioning
+    else if (piece.pieceScore! >= 11) {
+      // Star ranks
+      // Encourage high rank pieces to move forward for attack
+      if (piece.isWhite) {
+        positionValue += row * 0.2;
+      } else {
+        positionValue += (7 - row) * 0.2;
+      }
+
+      // Control center of board
+      if (col >= 2 && col <= 6) {
+        positionValue += 0.5;
+      }
+    }
+    // Spy positioning
+    else if (piece.type == GamePieceType.spy) {
+      // Spies should advance to hunt privates
+      if (piece.isWhite) {
+        positionValue += row * 0.3;
+      } else {
+        positionValue += (7 - row) * 0.3;
+      }
+    }
+    // Private positioning
+    else if (piece.type == GamePieceType.private) {
+      // Privates are useful for hunting spies or as flag shields
+      if (col >= 2 && col <= 6) {
+        positionValue += 0.3; // Useful in center
       }
     }
 
-    return count;
+    return positionValue;
   }
 
-  // Helper function to check if a position is valid on the board
+  // Evaluate flag safety
+  double evaluateFlagSafety() {
+    double safetyScore = 0.0;
+
+    // Find flags
+    GamePiece? whiteFlag;
+    GamePiece? blackFlag;
+    int whiteFlagRow = -1;
+    int whiteFlagCol = -1;
+    int blackFlagRow = -1;
+    int blackFlagCol = -1;
+
+    for (int row = 0; row < 8; row++) {
+      for (int col = 0; col < 9; col++) {
+        GamePiece? piece = board[row][col];
+        if (piece != null && piece.type == GamePieceType.flag) {
+          if (piece.isWhite) {
+            whiteFlag = piece;
+            whiteFlagRow = row;
+            whiteFlagCol = col;
+          } else {
+            blackFlag = piece;
+            blackFlagRow = row;
+            blackFlagCol = col;
+          }
+        }
+      }
+    }
+
+    // If either flag is captured, return a large score
+    if (whiteFlag == null) {
+      return -1000.0; // White flag captured, bad for white
+    }
+    if (blackFlag == null) {
+      return 1000.0; // Black flag captured, good for white
+    }
+
+    // Check for pieces protecting each flag
+    if (whiteFlagRow != -1) {
+      safetyScore += evaluateFlagProtection(whiteFlagRow, whiteFlagCol, true);
+    }
+
+    if (blackFlagRow != -1) {
+      safetyScore -= evaluateFlagProtection(blackFlagRow, blackFlagCol, false);
+    }
+
+    return safetyScore;
+  }
+
+  // Helper method to evaluate flag protection
+  double evaluateFlagProtection(int flagRow, int flagCol, bool isWhiteFlag) {
+    double protectionScore = 0.0;
+    List<List<int>> adjacentPositions = [
+      [flagRow - 1, flagCol], // up
+      [flagRow + 1, flagCol], // down
+      [flagRow, flagCol - 1], // left
+      [flagRow, flagCol + 1], // right
+      [flagRow - 1, flagCol - 1], // up-left
+      [flagRow - 1, flagCol + 1], // up-right
+      [flagRow + 1, flagCol - 1], // down-left
+      [flagRow + 1, flagCol + 1], // down-right
+    ];
+
+    // Count friendly pieces around the flag
+    int friendlyPieces = 0;
+    int enemyThreats = 0;
+
+    for (var position in adjacentPositions) {
+      int row = position[0];
+      int col = position[1];
+
+      if (isInBoard(row, col)) {
+        GamePiece? piece = board[row][col];
+        if (piece != null) {
+          if (piece.isWhite == isWhiteFlag) {
+            friendlyPieces++;
+            // Higher value for higher rank protectors
+            protectionScore += pieceValueFactor(piece) * 0.1;
+          } else {
+            enemyThreats++;
+            // Direct threats are bad
+            protectionScore -= pieceValueFactor(piece) * 0.2;
+          }
+        }
+      }
+    }
+
+    // Strong protection bonus
+    protectionScore += friendlyPieces * 2.0;
+
+    // Heavy penalty for unprotected flags with nearby threats
+    if (friendlyPieces == 0 && enemyThreats > 0) {
+      protectionScore -= 10.0;
+    }
+
+    return protectionScore;
+  }
+
+  // Evaluate specific 1 score for move ordering
+  double evaluateMoveScore(int fromRow, int fromCol, int toRow, int toCol) {
+    double score = 0.0;
+    GamePiece? movingPiece = board[fromRow][fromCol];
+    GamePiece? targetPiece = board[toRow][toCol];
+
+    if (movingPiece == null) return score;
+
+    // Capture evaluation
+    if (targetPiece != null) {
+      // Basic capture score based on piece values
+      double captureValue =
+          pieceValueFactor(targetPiece) - pieceValueFactor(movingPiece) / 2;
+
+      // Adjust for special cases
+
+      // Flag capture is highest priority
+      if (targetPiece.type == GamePieceType.flag) {
+        return 1000.0;
+      }
+
+      // Spy capturing private case
+      if (movingPiece.type == GamePieceType.spy &&
+          targetPiece.type == GamePieceType.private) {
+        captureValue -= 10.0; // Penalize this move as spy loses
+      }
+
+      // Private capturing spy case
+      if (movingPiece.type == GamePieceType.private &&
+          targetPiece.type == GamePieceType.spy) {
+        captureValue += 5.0; // Bonus for this advantageous move
+      }
+
+      // Even trades slightly favor the AI at medium difficulty to encourage aggression
+      if (movingPiece.pieceScore == targetPiece.pieceScore &&
+          _aiDifficulty == 2) {
+        captureValue += 0.5;
+      }
+
+      score += captureValue;
+    } else {
+      // Non-capture move evaluation
+
+      // Flag movement evaluation
+      if (movingPiece.type == GamePieceType.flag) {
+        // Flag should generally avoid moving unless necessary
+        score -= 5.0;
+
+        // But if it's close to winning, encourage it
+        if ((!movingPiece.isWhite && toRow == 0) ||
+            (movingPiece.isWhite && toRow == 7)) {
+          score += 50.0; // Big bonus for moves that can lead to winning
+        }
+      }
+
+      // Forward movement bonus for attacking pieces
+      if (movingPiece.isWhite) {
+        score += (toRow - fromRow) * 0.3; // White moves down the board
+      } else {
+        score += (fromRow - toRow) * 0.3; // Black moves up the board
+      }
+
+      // Center control bonus
+      if (toCol >= 2 && toCol <= 6) {
+        score += 0.2;
+      }
+    }
+
+    return score;
+  }
+
+  // Check if position is within board
   bool isInBoard(int row, int col) {
-    return row >= 0 && col >= 0 && row < board.length && col < board[0].length;
+    return row >= 0 && row < 8 && col >= 0 && col < 9;
+  }
+}
+
+// Move class to store move information for minimax
+class Move {
+  final int fromRow;
+  final int fromCol;
+  final int toRow;
+  final int toCol;
+  final double score;
+
+  Move(this.fromRow, this.fromCol, this.toRow, this.toCol, this.score);
+
+  @override
+  String toString() {
+    return 'Move from ($fromRow,$fromCol) to ($toRow,$toCol) with score $score';
   }
 }
